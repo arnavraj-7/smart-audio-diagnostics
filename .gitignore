@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+
+# Raw datasets: several GB, redistributed under their own licences.
+# See DOWNLOADS.md for where each one comes from.
+data/gtzan/
+data/physionet2016/
+data/icbhi/
+data/esc50/
+data/recordings/
+*.zip
+
+# GTZAN music excerpts are copyrighted recordings; regenerate them locally
+# with `python scripts/make_demo_wavs.py` after downloading GTZAN.
+data/demo_wavs/music_*.wav
+
+# Feature caches (rebuilt automatically from the datasets)
+results/cache/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
