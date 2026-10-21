@@ -173,7 +173,9 @@ from app_gui import segment_probs, true_label_from_name  # noqa: E402
 from src.preprocess import resample_to  # noqa: E402
 
 demos = sorted(DEMO.glob("*.wav"))
-check("demo clips present", len(demos) >= 30, f"{len(demos)} files")
+# 22 heart/lung clips ship with the repo; the 20 GTZAN music clips are
+# regenerated locally (copyright), so they may be absent in a fresh clone.
+check("demo clips present", len(demos) >= 20, f"{len(demos)} files")
 per = {}
 for f in demos:
     d = f.stem.split("_")[0]
