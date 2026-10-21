@@ -1,0 +1,118 @@
+{
+  "domain": "respiratory",
+  "classifier": "SVM (RBF)",
+  "params": {
+    "clf__C": 1,
+    "clf__gamma": 0.001
+  },
+  "source": "real:C:\\dsp\\data\\icbhi",
+  "n_samples": 6392,
+  "n_groups": 126,
+  "n_features": 53,
+  "classes": [
+    "normal",
+    "wheeze",
+    "crackle"
+  ],
+  "holdout_accuracy": 0.5048934945308002,
+  "holdout_balanced_accuracy": 0.5040692294188368,
+  "screening": {
+    "sensitivity": 0.5731070496083551,
+    "specificity": 0.451081359423275,
+    "icbhi_score": 0.512094204515815
+  },
+  "recording_level": null,
+  "comparison": {
+    "SVM (RBF)": {
+      "cv_mean": 0.54551405270689,
+      "test_accuracy": 0.5250431778929189,
+      "balanced_accuracy": 0.42646905591396794,
+      "macro_f1": 0.4301444778793007
+    },
+    "k-NN (k=5)": {
+      "cv_mean": 0.5286530364672621,
+      "test_accuracy": 0.5325273459988485,
+      "balanced_accuracy": 0.39838120333471627,
+      "macro_f1": 0.3884348757147342
+    },
+    "Random Forest": {
+      "cv_mean": 0.571942021417739,
+      "test_accuracy": 0.5365572826712723,
+      "balanced_accuracy": 0.4256528692727368,
+      "macro_f1": 0.4289228699766749
+    }
+  },
+  "confusion_matrix": [
+    [
+      438,
+      166,
+      367
+    ],
+    [
+      60,
+      97,
+      71
+    ],
+    [
+      128,
+      68,
+      342
+    ]
+  ],
+  "feature_names": [
+    "mfcc::mfcc1_mean",
+    "mfcc::mfcc1_std",
+    "mfcc::mfcc2_mean",
+    "mfcc::mfcc2_std",
+    "mfcc::mfcc3_mean",
+    "mfcc::mfcc3_std",
+    "mfcc::mfcc4_mean",
+    "mfcc::mfcc4_std",
+    "mfcc::mfcc5_mean",
+    "mfcc::mfcc5_std",
+    "mfcc::mfcc6_mean",
+    "mfcc::mfcc6_std",
+    "mfcc::mfcc7_mean",
+    "mfcc::mfcc7_std",
+    "mfcc::mfcc8_mean",
+    "mfcc::mfcc8_std",
+    "mfcc::mfcc9_mean",
+    "mfcc::mfcc9_std",
+    "mfcc::mfcc10_mean",
+    "mfcc::mfcc10_std",
+    "mfcc::mfcc11_mean",
+    "mfcc::mfcc11_std",
+    "mfcc::mfcc12_mean",
+    "mfcc::mfcc12_std",
+    "mfcc::mfcc13_mean",
+    "mfcc::mfcc13_std",
+    "mfcc::dmfcc1_mean",
+    "mfcc::dmfcc2_mean",
+    "mfcc::dmfcc3_mean",
+    "mfcc::dmfcc4_mean",
+    "mfcc::dmfcc5_mean",
+    "mfcc::dmfcc6_mean",
+    "mfcc::dmfcc7_mean",
+    "mfcc::dmfcc8_mean",
+    "mfcc::dmfcc9_mean",
+    "mfcc::dmfcc10_mean",
+    "mfcc::dmfcc11_mean",
+    "mfcc::dmfcc12_mean",
+    "mfcc::dmfcc13_mean",
+    "spectral::centroid_mean",
+    "spectral::centroid_std",
+    "spectral::bandwidth_mean",
+    "spectral::bandwidth_std",
+    "spectral::rolloff_mean",
+    "spectral::rolloff_std",
+    "spectral::flatness_mean",
+    "spectral::flatness_std",
+    "temporal::zcr_mean",
+    "temporal::zcr_std",
+    "temporal::energy_mean",
+    "temporal::energy_std",
+    "temporal::rms_mean",
+    "temporal::rms_std"
+  ],
+  "trained_at": "2026-10-21T20:59:38"
+}

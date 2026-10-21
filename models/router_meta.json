@@ -1,0 +1,55 @@
+{
+  "classes": [
+    "music",
+    "heart",
+    "respiratory",
+    "other"
+  ],
+  "holdout_accuracy": 0.9464544138929089,
+  "confusion_matrix": [
+    [
+      148,
+      0,
+      1,
+      5
+    ],
+    [
+      0,
+      162,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      151,
+      8
+    ],
+    [
+      18,
+      0,
+      5,
+      193
+    ]
+  ],
+  "n_samples": 2817,
+  "novelty_threshold": 9.942162587597554,
+  "sources": {
+    "music": "real:C:\\dsp\\data\\gtzan\\genres",
+    "heart": "real:C:\\dsp\\data\\physionet2016",
+    "respiratory": "real:C:\\dsp\\data\\icbhi",
+    "other": "real:C:\\dsp\\data\\esc50\\ESC-50-master"
+  },
+  "cfg": {
+    "sr": 4000,
+    "band": [
+      20.0,
+      1900.0
+    ],
+    "frame_ms": 50.0,
+    "hop_ms": 25.0,
+    "n_mels": 30,
+    "n_mfcc": 13,
+    "clip_s": 3.0
+  }
+}

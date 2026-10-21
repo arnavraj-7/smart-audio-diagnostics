@@ -1,0 +1,127 @@
+{
+  "domain": "heart",
+  "classifier": "Random Forest",
+  "params": {
+    "clf__max_depth": 12,
+    "clf__n_estimators": 400
+  },
+  "source": "real:C:\\dsp\\data\\physionet2016",
+  "n_samples": 8147,
+  "n_groups": 3240,
+  "n_features": 53,
+  "classes": [
+    "normal",
+    "abnormal"
+  ],
+  "holdout_accuracy": 0.8572136836886465,
+  "holdout_balanced_accuracy": 0.8329125711030332,
+  "screening": {
+    "sensitivity": 0.7899543378995434,
+    "specificity": 0.8758708043065231,
+    "icbhi_score": 0.8329125711030332
+  },
+  "recording_level": {
+    "n_recordings": 810,
+    "accuracy": 0.828395061728395,
+    "balanced_accuracy": 0.811402081977879,
+    "confusion_matrix": [
+      [
+        535,
+        101
+      ],
+      [
+        38,
+        136
+      ]
+    ],
+    "sensitivity": 0.7816091954022989,
+    "specificity": 0.8411949685534591,
+    "icbhi_score": 0.811402081977879
+  },
+  "comparison": {
+    "SVM (RBF)": {
+      "cv_mean": 0.8781402936378466,
+      "test_accuracy": 0.8527516113039167,
+      "balanced_accuracy": 0.7954170173018585,
+      "macro_f1": 0.7884523500527061
+    },
+    "k-NN (k=5)": {
+      "cv_mean": 0.8505709624796085,
+      "test_accuracy": 0.8423401090728805,
+      "balanced_accuracy": 0.7252502161647885,
+      "macro_f1": 0.7452983483860309
+    },
+    "Random Forest": {
+      "cv_mean": 0.8768352365415988,
+      "test_accuracy": 0.866137828458106,
+      "balanced_accuracy": 0.8245891423101726,
+      "macro_f1": 0.8110615993516442
+    }
+  },
+  "confusion_matrix": [
+    [
+      1383,
+      196
+    ],
+    [
+      92,
+      346
+    ]
+  ],
+  "feature_names": [
+    "mfcc::mfcc1_mean",
+    "mfcc::mfcc1_std",
+    "mfcc::mfcc2_mean",
+    "mfcc::mfcc2_std",
+    "mfcc::mfcc3_mean",
+    "mfcc::mfcc3_std",
+    "mfcc::mfcc4_mean",
+    "mfcc::mfcc4_std",
+    "mfcc::mfcc5_mean",
+    "mfcc::mfcc5_std",
+    "mfcc::mfcc6_mean",
+    "mfcc::mfcc6_std",
+    "mfcc::mfcc7_mean",
+    "mfcc::mfcc7_std",
+    "mfcc::mfcc8_mean",
+    "mfcc::mfcc8_std",
+    "mfcc::mfcc9_mean",
+    "mfcc::mfcc9_std",
+    "mfcc::mfcc10_mean",
+    "mfcc::mfcc10_std",
+    "mfcc::mfcc11_mean",
+    "mfcc::mfcc11_std",
+    "mfcc::mfcc12_mean",
+    "mfcc::mfcc12_std",
+    "mfcc::mfcc13_mean",
+    "mfcc::mfcc13_std",
+    "mfcc::dmfcc1_mean",
+    "mfcc::dmfcc2_mean",
+    "mfcc::dmfcc3_mean",
+    "mfcc::dmfcc4_mean",
+    "mfcc::dmfcc5_mean",
+    "mfcc::dmfcc6_mean",
+    "mfcc::dmfcc7_mean",
+    "mfcc::dmfcc8_mean",
+    "mfcc::dmfcc9_mean",
+    "mfcc::dmfcc10_mean",
+    "mfcc::dmfcc11_mean",
+    "mfcc::dmfcc12_mean",
+    "mfcc::dmfcc13_mean",
+    "spectral::centroid_mean",
+    "spectral::centroid_std",
+    "spectral::bandwidth_mean",
+    "spectral::bandwidth_std",
+    "spectral::rolloff_mean",
+    "spectral::rolloff_std",
+    "spectral::flatness_mean",
+    "spectral::flatness_std",
+    "temporal::zcr_mean",
+    "temporal::zcr_std",
+    "temporal::energy_mean",
+    "temporal::energy_std",
+    "temporal::rms_mean",
+    "temporal::rms_std"
+  ],
+  "trained_at": "2026-10-21T20:55:15"
+}
