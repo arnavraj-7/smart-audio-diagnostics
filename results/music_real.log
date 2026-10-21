@@ -1,0 +1,81 @@
+
+=== Music branch (M4a) ===
+[music] 2995 clips  source=real:C:\dsp\data\gtzan\genres
+  50/2995
+  100/2995
+  150/2995
+  200/2995
+  250/2995
+  300/2995
+  350/2995
+  400/2995
+  450/2995
+  500/2995
+  550/2995
+  600/2995
+  650/2995
+  700/2995
+  750/2995
+  800/2995
+  850/2995
+  900/2995
+  950/2995
+  1000/2995
+  1050/2995
+  1100/2995
+  1150/2995
+  1200/2995
+  1250/2995
+  1300/2995
+  1350/2995
+  1400/2995
+  1450/2995
+  1500/2995
+  1550/2995
+  1600/2995
+  1650/2995
+  1700/2995
+  1750/2995
+  1800/2995
+  1850/2995
+  1900/2995
+  1950/2995
+  2000/2995
+  2050/2995
+  2100/2995
+  2150/2995
+  2200/2995
+  2250/2995
+  2300/2995
+  2350/2995
+  2400/2995
+  2450/2995
+  2500/2995
+  2550/2995
+  2600/2995
+  2650/2995
+  2700/2995
+  2750/2995
+  2800/2995
+  2850/2995
+  2900/2995
+  2950/2995
+[music] feature matrix (2995, 53) from 500 groups in 125.2s
+  data source : real:C:\dsp\data\gtzan\genres
+  features    : 53   samples: 2995   groups: 500
+  SVM (RBF)       cv=0.799+/-0.037  test=0.802  macroF1=0.788
+  k-NN (k=5)      cv=0.706+/-0.031  test=0.735  macroF1=0.714
+  Random Forest   cv=0.773+/-0.033  test=0.818  macroF1=0.805
+  best        : Random Forest
+  ablation:
+    All features         n=53  acc=0.787  d=+0.000
+    without mfcc         n=14  acc=0.665  d=-0.122
+    without spectral     n=45  acc=0.788  d=+0.000
+    without temporal     n=47  acc=0.773  d=-0.015
+    mfcc only            n=39  acc=0.770  d=-0.017
+    spectral only        n=8   acc=0.604  d=-0.183
+    temporal only        n=6   acc=0.573  d=-0.214
+
+Saved C:\dsp\results\tables\results.json
+Figures in C:\dsp\results\figures
+Saved C:\dsp\results\RESULTS.md

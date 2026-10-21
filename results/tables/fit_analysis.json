@@ -1,0 +1,140 @@
+[
+  {
+    "domain": "music",
+    "source": "real:C:\\dsp\\data\\gtzan\\genres",
+    "classifier": "Random Forest",
+    "params": {
+      "clf__max_depth": null,
+      "clf__n_estimators": 400
+    },
+    "n_samples": 2995,
+    "n_groups": 500,
+    "n_classes": 5,
+    "chance": 0.2,
+    "train_accuracy": 1.0,
+    "cv_accuracy": 0.7717066888714995,
+    "cv_std": 0.03470931771324634,
+    "test_accuracy": 0.821954484605087,
+    "train_minus_cv": 0.2282933111285005,
+    "cv_minus_test": -0.05024779573358751,
+    "verdict": "generalises well - CV 0.772 vs test 0.822; train=1.000 is inherent to this classifier, not evidence of overfitting",
+    "learning_curve": {
+      "sizes": [
+        359,
+        766,
+        1174,
+        1581,
+        1988,
+        2396
+      ],
+      "train": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "validation": [
+        0.7262103505843072,
+        0.7589315525876461,
+        0.7712854757929883,
+        0.7749582637729548,
+        0.7836393989983306,
+        0.78330550918197
+      ]
+    }
+  },
+  {
+    "domain": "heart",
+    "source": "real:C:\\dsp\\data\\physionet2016",
+    "classifier": "Random Forest",
+    "params": {
+      "clf__max_depth": 12,
+      "clf__n_estimators": 400
+    },
+    "n_samples": 8147,
+    "n_groups": 3240,
+    "n_classes": 2,
+    "chance": 0.5,
+    "train_accuracy": 0.9580750407830343,
+    "cv_accuracy": 0.868352365415987,
+    "cv_std": 0.02020864163060611,
+    "test_accuracy": 0.8572136836886465,
+    "train_minus_cv": 0.08972267536704726,
+    "cv_minus_test": 0.01113868172734056,
+    "verdict": "well fitted - gap 0.090",
+    "learning_curve": {
+      "sizes": [
+        977,
+        2085,
+        3193,
+        4301,
+        5409,
+        6518
+      ],
+      "train": [
+        0.9895598771750256,
+        0.9725659472422062,
+        0.9664265580958347,
+        0.9606603115554524,
+        0.9555555555555555,
+        0.9518226906540324
+      ],
+      "validation": [
+        0.8519685003784925,
+        0.8577385350642308,
+        0.861665518007585,
+        0.8609298489419155,
+        0.8609290204009385,
+        0.8611747957834798
+      ]
+    }
+  },
+  {
+    "domain": "respiratory",
+    "source": "real:C:\\dsp\\data\\icbhi",
+    "classifier": "SVM (RBF)",
+    "params": {
+      "clf__C": 1,
+      "clf__gamma": 0.001
+    },
+    "n_samples": 6392,
+    "n_groups": 126,
+    "n_classes": 3,
+    "chance": 0.3333333333333333,
+    "train_accuracy": 0.5673469387755102,
+    "cv_accuracy": 0.4912783417597673,
+    "cv_std": 0.04188705780653879,
+    "test_accuracy": 0.5048934945308002,
+    "train_minus_cv": 0.07606859701574292,
+    "cv_minus_test": -0.013615152771032923,
+    "verdict": "well fitted - gap 0.076",
+    "learning_curve": {
+      "sizes": [
+        768,
+        1638,
+        2509,
+        3379,
+        4250,
+        5121
+      ],
+      "train": [
+        0.5481770833333333,
+        0.5437118437118438,
+        0.5508170585890794,
+        0.55696951760876,
+        0.5621647058823529,
+        0.5641325023414497
+      ],
+      "validation": [
+        0.48596822741407,
+        0.4904208447062226,
+        0.4931707764151554,
+        0.5030027717061144,
+        0.5109780851944176,
+        0.516313939983355
+      ]
+    }
+  }
+]

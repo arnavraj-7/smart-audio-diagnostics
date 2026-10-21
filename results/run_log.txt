@@ -1,0 +1,52 @@
+
+=== Music branch (M4a) ===
+  data source : real:C:\dsp\data\gtzan\genres
+  features    : 53   samples: 2995   groups: 500
+  SVM (RBF)       cv=0.800+/-0.038  test=0.803  bal=0.799  macroF1=0.789
+  k-NN (k=5)      cv=0.706+/-0.031  test=0.735  bal=0.721  macroF1=0.714
+  Random Forest   cv=0.772+/-0.039  test=0.818  bal=0.807  macroF1=0.804
+  best        : Random Forest
+  ablation:
+    All features         n=53  acc=0.790  d=+0.000
+    without mfcc         n=14  acc=0.664  d=-0.127
+    without spectral     n=45  acc=0.789  d=-0.001
+    without temporal     n=47  acc=0.771  d=-0.019
+    mfcc only            n=39  acc=0.771  d=-0.020
+    spectral only        n=8   acc=0.601  d=-0.189
+    temporal only        n=6   acc=0.572  d=-0.218
+
+=== Medical branch - heart sounds (M4b) ===
+  data source : real:C:\dsp\data\physionet2016
+  features    : 53   samples: 8147   groups: 3240
+  SVM (RBF)       cv=0.878+/-0.012  test=0.853  bal=0.795  macroF1=0.788  sens=0.694 spec=0.897
+  k-NN (k=5)      cv=0.851+/-0.010  test=0.842  bal=0.725  macroF1=0.745  sens=0.518 spec=0.932
+  Random Forest   cv=0.877+/-0.016  test=0.866  bal=0.825  macroF1=0.811  sens=0.751 spec=0.898
+  best        : Random Forest
+  ablation:
+    All features         n=53  acc=0.873  d=+0.000
+    without mfcc         n=14  acc=0.856  d=-0.016
+    without spectral     n=45  acc=0.875  d=+0.002
+    without temporal     n=47  acc=0.867  d=-0.006
+    mfcc only            n=39  acc=0.861  d=-0.012
+    spectral only        n=8   acc=0.835  d=-0.037
+    temporal only        n=6   acc=0.836  d=-0.036
+
+=== Medical branch - respiratory sounds (M4b) ===
+  data source : real:C:\dsp\data\icbhi
+  features    : 53   samples: 6392   groups: 126
+  SVM (RBF)       cv=0.546+/-0.040  test=0.525  bal=0.426  macroF1=0.430  sens=0.341 spec=0.670
+  k-NN (k=5)      cv=0.529+/-0.020  test=0.533  bal=0.398  macroF1=0.388  sens=0.334 spec=0.689
+  Random Forest   cv=0.572+/-0.029  test=0.537  bal=0.426  macroF1=0.429  sens=0.289 spec=0.732
+  best        : SVM (RBF)
+  ablation:
+    All features         n=53  acc=0.538  d=+0.000
+    without mfcc         n=14  acc=0.465  d=-0.073
+    without spectral     n=45  acc=0.535  d=-0.003
+    without temporal     n=47  acc=0.517  d=-0.021
+    mfcc only            n=39  acc=0.509  d=-0.030
+    spectral only        n=8   acc=0.417  d=-0.121
+    temporal only        n=6   acc=0.438  d=-0.101
+
+Saved C:\dsp\results\tables\results.json
+Figures in C:\dsp\results\figures
+Saved C:\dsp\results\RESULTS.md
