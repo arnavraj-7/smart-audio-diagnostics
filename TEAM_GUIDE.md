@@ -7,9 +7,11 @@ useful, how it works, what each of us must study, and what goes into the PPT
 and the abstract.** Every number in it was produced by running the code in this
 folder (see section 9 to reproduce).
 
-> Work split (section 7): **You (team lead)** — pre-processing, rhythm analysis,
-> the app and the live demo · **Arjit** — feature extraction (FFT, MFCC) and
-> MATLAB · **Arin** — datasets, machine learning and evaluation.
+> Work split (section 7): **Arnav (CSE)**: Python, machine learning, the app
+> and the demo · **Arjit (ECE)**: DSP part 1, sampling, filters, noise
+> reduction, heart/breathing rate + MATLAB pre-processing · **Arin (ECE)**:
+> DSP part 2, FFT, spectrogram, MFCC & features + MATLAB features and
+> verification.
 
 ---
 
@@ -36,7 +38,7 @@ datasets** — GTZAN, PhysioNet/CinC 2016 and ICBHI 2017.
 ### Problem
 
 - India has a **severe shortage of cardiologists and chest specialists**,
-  worst in rural areas (Arin: find a current, citable figure before putting a
+  worst in rural areas (Arnav: find a current, citable figure before putting a
   number on the slide). Rheumatic and congenital heart disease, asthma, COPD
   and pneumonia are common and are often first noticed through the **stethoscope**.
 - Auscultation (listening with a stethoscope) needs years of training. A nurse
@@ -286,165 +288,201 @@ a documented negative result, and an honest one to present.
 
 ## 7. Who studies what
 
-Each person owns one part end-to-end: **understand it, explain it in the viva,
-and make its PPT slides.** Everyone must be able to give the 1-minute overview
-in section 1 and the use case in section 2.
+The split follows our backgrounds: **Arnav (CSE)** owns the Python and
+machine-learning side; **Arjit and Arin (core ECE)** own the DSP theory and the
+MATLAB implementation, divided so they do not overlap. Arjit takes the signal
+*before* features (sampling, filters, noise, rate), and Arin takes the
+features themselves (FFT, spectrogram, MFCC) and the MATLAB-vs-Python proof.
 
-### 7.1 You (team lead) — Pre-processing, rhythm analysis, the app and the demo
+Each person owns their part end-to-end: **understand it, explain it in the
+viva, and make its PPT slides.** Everyone must be able to give the 1-minute
+overview in section 1 and the use case in section 2.
 
-**Owns:** M1 reading, M2 pre-processing, the rate estimator, the router,
-`app_gui.py`, the live demo, overall story.
+| | Arnav (CSE) | Arjit (ECE) | Arin (ECE) |
+|---|---|---|---|
+| Area | Python, ML, app, demo | DSP 1: sampling, filtering, pre-processing, rate estimation | DSP 2: spectral analysis, MFCC & features |
+| MATLAB | — | `sa_preprocess.m`, `sa_round.m`, `sa_demo.m` | `sa_features.m`, `sa_verify.m`, `sa_classify.m` |
+| Python files | `src/train.py`, `src/datasets.py`, `src/router.py`, `train_model.py`, `run_experiment.py`, `analyze_fit.py`, `app_gui.py`, `src/report.py`, `tests/` | `src/preprocess.py`, `src/rhythm.py` | `src/features.py`, `src/ablation.py` |
+| Writes | Abstract, results slides, demo | Pre-processing + rate slides | Feature + MATLAB slides |
 
-| Topic to study | What you must be able to explain | Where in our code |
-|---|---|---|
-| Sampling, Nyquist theorem, aliasing | Why heart uses 2 kHz and music 22.05 kHz | `config.py` |
-| Resampling (polyphase, up/down by L/M) | `resample_poly`, anti-alias filter inside it | `src/preprocess.py: resample_to` |
-| IIR filters — Butterworth | Maximally flat passband, order 4, −3 dB cut-offs | `bandpass` |
-| Zero-phase filtering | `filtfilt` runs forward + backward → no phase distortion, squared magnitude | `bandpass` |
-| SOS (second-order sections) | Why SOS is numerically stable vs one high-order polynomial | `butter(..., output="sos")` |
-| Spectral subtraction denoising | Estimate noise from quietest 10 % frames, subtract, spectral floor | `denoise` |
-| Normalisation, fixed-length clips | Peak normalisation, why each clip must be the same length | `normalize`, `fix_length` |
-| Envelope detection | Rectify + low-pass; homomorphic envelope (log domain) | `src/rhythm.py` |
-| Autocorrelation | Periodic signal → peaks at multiples of the period; picking the right peak | `src/rhythm.py: autocorr, estimate_rate` |
-| The router | Same features at 4 kHz; Random Forest picks music / heart / lung / *other*; "other" learned from ESC-50 everyday sounds; plus a nearest-neighbour novelty score | `src/router.py` |
-| Python app basics | Tkinter, Matplotlib embedding, how the buttons call the pipeline | `app_gui.py` |
+### 7.1 Arnav (CSE): Python, machine learning, the app and the demo
 
-**Resources**
-- Oppenheim & Schafer, *Discrete-Time Signal Processing* — ch. 4 (sampling, resampling), ch. 7 (filter design).
-- SciPy docs: `scipy.signal.butter`, `sosfiltfilt`, `resample_poly`.
-- Schmidt et al. 2010, "Segmentation of heart sound recordings by a duration-dependent HMM" (homomorphic envelope idea).
-- Our `DSP_EXPLAINED.md` Parts 2–3 and `HOW_IT_WORKS.md`.
-
-**PPT slides you make:** Title · Problem & use case · System architecture ·
-Pre-processing (with the *DSP pipeline* tab screenshot) · Rate estimation
-(with the *Rhythm* tab screenshot) · App walkthrough / live demo · Conclusion.
-
-**Viva questions you answer**
-- *Why band-pass 25–400 Hz for heart sounds?* S1/S2 energy is below ~150 Hz,
-  murmurs reach ~400 Hz; everything else is noise for this task.
-- *Why zero-phase filtering?* A normal IIR filter shifts each frequency by a
-  different delay and smears the sharp S1/S2 and crackle transients; filtering
-  forward and backward cancels the phase.
-- *How do you get heart rate without ML?* Envelope → autocorrelation → the lag
-  of the strongest peak is one beat period → bpm = 60 / period.
-- *What if the file is not music/heart/lung?* The router has a fourth class,
-  "other", trained on 2 000 environmental sounds (ESC-50). The app shows
-  UNKNOWN SOUND in orange and says the label is not meaningful. Try it live
-  with speech or clapping into the mic.
-
-### 7.2 Arjit — Feature extraction (FFT, MFCC, spectral features) and MATLAB
-
-**Owns:** M3 feature extraction, the MATLAB mirror, the MATLAB-vs-Python
-verification.
+**Owns:** M1 datasets and loaders, M4 classifiers, M5 evaluation, the router,
+the training/experiment scripts, `app_gui.py`, the tests, the live demo, the
+results slides and the abstract.
 
 | Topic to study | What you must be able to explain | Where in our code |
 |---|---|---|
-| DFT and FFT | Definition, O(N log N), frequency resolution = fs / N | `src/features.py: stft_power` |
-| Framing and windowing | Why 25–50 ms frames; Hamming window reduces spectral leakage | `frame_signal` |
-| STFT and spectrogram | Time–frequency trade-off | Spectrogram plot |
-| Mel scale | mel = 2595·log10(1 + f/700); why human hearing is log-like | `hz_to_mel`, `mel_filterbank` |
-| Mel filter bank | Triangular filters, wider at high frequency | `mel_filterbank` |
-| Log + DCT = cepstrum | Log compresses dynamic range; DCT decorrelates → MFCC | `mfcc` |
-| Pre-emphasis | y[n] = x[n] − 0.97 x[n−1] boosts high frequencies | `pre_emphasis` |
-| Delta MFCC | Regression slope over ±2 frames (how fast MFCC changes) | `delta` |
-| Spectral centroid, bandwidth, roll-off, flatness | "Brightness", spread, where 85 % of energy lies, noise-like vs tonal | `spectral_*` |
-| ZCR, short-time energy, RMS | Time-domain noisiness and loudness | `zero_crossing_rate`, `short_time_energy` |
-| MATLAB implementation | `fft`, `dct`, `butter`, `filtfilt`, `spectrogram` | `matlab/sa_features.m`, `sa_preprocess.m` |
-| Cross-verification | Same file, two languages, relative error per feature | `matlab/sa_verify.m` |
-
-**Resources**
-- "Mel Frequency Cepstral Coefficient (MFCC) tutorial" — practicalcryptography.com (best single explanation).
-- 3Blue1Brown, "But what is the Fourier Transform?" (YouTube) for intuition.
-- Oppenheim & Schafer ch. 8–10 (DFT, FFT, spectral analysis with the DFT).
-- MATLAB docs: `spectrogram`, `dct`, `designfilt`.
-- Our `DSP_EXPLAINED.md` Part 4 (every feature with its formula).
-
-**PPT slides you make:** Framing & windowing · FFT & spectrogram · MFCC
-step-by-step (one slide with the 7-step diagram) · Spectral & temporal
-features · MATLAB implementation + verification table · Feature ablation
-(why MFCC matters).
-
-**Viva questions you answer**
-- *Why Hamming and not rectangular?* Rectangular has high side lobes → energy
-  leaks into neighbouring bins; Hamming's first side lobe is −43 dB.
-- *Why log before DCT?* Turns the multiplicative source × vocal-tract (filter)
-  model into an addition so the DCT can separate them; also matches loudness
-  perception.
-- *Why only 13 MFCCs?* The low coefficients describe the spectral envelope
-  (timbre); higher ones carry fine pitch detail that is not needed.
-- *How do you know your MFCC is correct?* Two independent implementations
-  (Python and MATLAB) agree to within 6 × 10⁻⁸ relative error on all 53 features.
-
-### 7.3 Arin — Datasets, machine learning and evaluation
-
-**Owns:** M1 datasets, M4 classifiers, M5 evaluation, the results slides, the
-abstract.
-
-| Topic to study | What you must be able to explain | Where in our code |
-|---|---|---|
-| The three datasets | Size, labels, how they were recorded, class balance | `src/datasets.py`, section 6 |
+| Python stack | NumPy arrays, SciPy, scikit-learn pipelines, Matplotlib, joblib model files | whole repo |
+| The three datasets | Size, labels, how they were recorded, class balance, how labels are parsed | `src/datasets.py`, section 6 |
 | Feature standardisation | z-score; why SVM and k-NN need it | `StandardScaler` in `src/train.py` |
-| SVM with RBF kernel | Maximum-margin, kernel trick, C and γ | `make_models` |
+| SVM with RBF kernel | Maximum margin, kernel trick, C and γ | `make_models` |
 | k-Nearest Neighbours | Distance vote, choice of k | `make_models` |
 | Random Forest | Bagging + random feature subsets, majority vote | `make_models` |
 | Train/test split, cross-validation | 75/25 hold-out, 5-fold CV, **group-wise** (no leakage) | `split`, `cv_splitter` |
 | Class imbalance | `class_weight="balanced"`, balanced accuracy | `src/train.py` |
-| Metrics | Accuracy, precision, recall, F1, **sensitivity, specificity**, confusion matrix | `evaluate_branch`, `screening_scores` |
+| Metrics | Accuracy, precision, recall, F1, **sensitivity, specificity**, confusion matrix, per-recording evaluation | `evaluate_branch`, `screening_scores`, `recording_level` |
 | Hyper-parameter tuning | Grid search over C, γ, k, depth | `train_model.py --tune` |
 | Over/under-fitting | Train vs CV vs test, learning curves | `analyze_fit.py` |
-| Feature ablation | Remove one feature group, measure the drop | `src/ablation.py` |
+| The router | Random Forest picks music / heart / lung / *other*; "other" learned from ESC-50; nearest-neighbour novelty score | `src/router.py` |
+| The app | Tkinter + Matplotlib, how each button calls the pipeline, single-threaded inference (the Tcl crash we fixed) | `app_gui.py` |
+| Testing | What the 52 system checks cover | `tests/test_system.py` |
 
 **Resources**
 - scikit-learn user guide: "Support Vector Machines", "Nearest Neighbors", "Ensemble methods", "Cross-validation", "Model evaluation".
-- StatQuest (YouTube): SVM, Random Forest, ROC & sensitivity/specificity.
-- Dataset papers: Tzanetakis & Cook 2002 (GTZAN); Liu et al. 2016, *Physiol. Meas.* (PhysioNet 2016); Rocha et al. 2019, *Physiol. Meas.* (ICBHI).
-- Our `STATUS_REPORT.md` and `results/FIT_ANALYSIS.md`.
+- StatQuest (YouTube): SVM, Random Forest, sensitivity & specificity.
+- Dataset papers: Tzanetakis & Cook 2002 (GTZAN); Liu et al. 2016, *Physiol. Meas.* (PhysioNet 2016); Rocha et al. 2019, *Physiol. Meas.* (ICBHI); Piczak 2015 (ESC-50).
+- Our `STATUS_REPORT.md`, `results/FIT_ANALYSIS.md` and `DEMO_SCRIPT.md`.
 
-**PPT slides you make:** Datasets · Classifiers used · Evaluation method
-(group split, imbalance) · Results tables · Confusion matrices · Over/under-fitting
-& learning curves · Comparison with literature · Future scope.
-**Also writes the abstract** (draft in section 8).
+**PPT slides you make:** Title · Problem & use case · System architecture ·
+Datasets · Classifiers & evaluation method · Results · Confusion matrices ·
+Over/under-fitting · Auto-detect, PDF report & app · Conclusion & future scope ·
+**live demo**. **Also writes the abstract** (draft in section 8).
 
 **Viva questions you answer**
 - *Why not deep learning?* Datasets are a few thousand clips; classical
   classifiers on good DSP features train in seconds, are explainable, and the
   synopsis asks for SVM / k-NN / RF. A CNN is listed as future work.
-- *Your train accuracy is 100 % — isn't that overfitting?* No: Random Forest and
-  RBF-SVM fit training data perfectly by construction. What matters is that
+- *Your train accuracy is 100 %, isn't that overfitting?* No: Random Forest
+  fits training data perfectly by construction. What matters is that
   cross-validation and the held-out test agree (they do, within ~0.05).
+- *Why split by song / recording / patient?* Otherwise clips of the same song
+  land on both sides and accuracy is inflated by 10–15 points.
 - *Why is heart accuracy higher than balanced accuracy?* The data is 80 %
   normal; balanced accuracy averages the per-class recall, so it is the honest
   number.
-- *How does this compare with published work?* See section 5 — comparable to
-  classical-feature baselines on the same datasets.
+- *What if the file is not music/heart/lung?* The router's fourth class,
+  "other", was trained on 2 000 environmental sounds; the app shows UNKNOWN
+  SOUND. Try it live with speech or clapping into the mic.
+- *How does this compare with published work?* See section 5.6.
+
+### 7.2 Arjit (ECE): DSP part 1, sampling, filtering, pre-processing and rate estimation
+
+**Owns:** M2 pre-processing in Python and MATLAB, the Butterworth filter design,
+the noise reduction, and the heart-rate / breathing-rate / tempo estimator.
+Explains the **DSP pipeline** and **Rhythm** tabs of the app.
+
+| Topic to study | What you must be able to explain | Where in our code |
+|---|---|---|
+| Sampling, Nyquist theorem, aliasing | Why heart uses 2 kHz, lungs 4 kHz, music 22.05 kHz | `config.py`, `matlab/sa_config.m` |
+| Resampling (polyphase, up/down by L/M) | Anti-alias low-pass inside the resampler; `gcd` to get L and M | `resample_to`, MATLAB `resample` |
+| IIR filters: Butterworth | Maximally flat passband, order 4, −3 dB cut-offs, magnitude response | `bandpass`, `sa_preprocess.m` (`butter`, `zp2sos`) |
+| Zero-phase filtering | Forward + backward filtering → no phase distortion, squared magnitude (order doubles) | `sosfiltfilt` / MATLAB `filtfilt` |
+| SOS (second-order sections) | Why cascaded biquads are numerically stable vs one high-order polynomial | `butter(..., output="sos")` |
+| Frequency response | Reading the magnitude-response plot in the DSP pipeline tab; passband per domain | `app_gui.py: _plot_dsp`, MATLAB `freqz` |
+| STFT-based spectral subtraction | Noise estimate from the quietest 10 % of frames, over-subtraction 1.5, spectral floor, overlap-add resynthesis | `denoise`, `sa_denoise` in `sa_preprocess.m` |
+| Normalisation, fixed-length clips | Peak normalisation; why every clip has the same length | `normalize`, `fix_length` |
+| Envelope detection | Rectify + low-pass; homomorphic envelope exp(LPF(log abs x)); spectral-flux onset envelope for music | `src/rhythm.py` |
+| Autocorrelation | Periodic signal → peaks at multiples of the period; choosing the right peak | `autocorr`, `estimate_rate` |
+| MATLAB rounding | Python `round(220.5)` = 220, MATLAB = 221, and why it broke every music feature | `matlab/sa_round.m` |
+| MATLAB demo | Run `sa_demo` live and explain each panel | `matlab/sa_demo.m` |
+
+**Resources**
+- Oppenheim & Schafer, *Discrete-Time Signal Processing*: ch. 4 (sampling, resampling), ch. 7 (IIR filter design).
+- MATLAB docs: `butter`, `filtfilt`, `zp2sos`, `freqz`, `resample`, `designfilt`.
+- Boll 1979, "Suppression of acoustic noise in speech using spectral subtraction" (the original paper).
+- Schmidt et al. 2010, heart-sound segmentation (homomorphic envelope).
+- Our `DSP_EXPLAINED.md` Parts 2–3.
+
+**PPT slides you make:** Pre-processing chain (resample → denoise →
+Butterworth → normalise, with the *DSP pipeline* tab screenshot `ui_dsp.png`) ·
+Filter design & frequency response · Heart rate / breathing rate / tempo by
+envelope autocorrelation (`ui_rhythm.png`, `ui_breathing.png`) · shares the
+MATLAB slide with Arin.
+
+**Viva questions you answer**
+- *Why band-pass 25–400 Hz for heart sounds?* S1/S2 energy is below ~150 Hz,
+  murmurs reach ~400 Hz; everything else is noise for this task.
+- *Why 2 kHz sampling for the heart?* Highest useful frequency is 400 Hz, and
+  Nyquist needs more than 800 Hz; 2 kHz leaves margin and keeps the data small.
+- *Why zero-phase filtering?* A normal IIR filter delays each frequency
+  differently and smears the sharp S1/S2 and crackle transients; filtering
+  forward and backward cancels the phase.
+- *Why SOS and not `[b, a]`?* High-order polynomials suffer coefficient
+  round-off and can become unstable; cascaded 2nd-order sections do not.
+- *How does spectral subtraction work?* Estimate the noise spectrum from the
+  quietest frames, subtract it from every frame's magnitude, keep the phase,
+  resynthesise by overlap-add.
+- *How do you get heart rate without ML?* Envelope → autocorrelation → the lag
+  of the first strong peak is one beat period → bpm = 60 / period.
+
+### 7.3 Arin (ECE): DSP part 2, spectral analysis, MFCC and features, MATLAB verification
+
+**Owns:** M3 feature extraction in Python and MATLAB, the 53-feature vector, the
+feature ablation, and the MATLAB-vs-Python cross-verification. Explains the
+**Signal analysis** tab of the app.
+
+| Topic to study | What you must be able to explain | Where in our code |
+|---|---|---|
+| DFT and FFT | Definition, O(N log N), frequency resolution = fs / N, zero-padding to a power of 2 | `stft_power`, MATLAB `fft` |
+| Framing and windowing | Why 25–50 ms frames; Hamming window reduces spectral leakage | `frame_signal`, `sa_frame` |
+| STFT and spectrogram | Time–frequency trade-off; reading the wheeze and murmur in a spectrogram | Spectrogram plot, MATLAB `spectrogram` |
+| Pre-emphasis | y[n] = x[n] − 0.97 x[n−1] boosts high frequencies | `pre_emphasis` |
+| Mel scale | mel = 2595·log10(1 + f/700); why hearing is log-like | `hz_to_mel`, `mel_filterbank` |
+| Mel filter bank | Triangular filters, wider at high frequency, area normalisation | `mel_filterbank`, `sa_melbank` |
+| Log + DCT = cepstrum | Log compresses dynamic range; DCT-II decorrelates → MFCC | `mfcc`, MATLAB `dct` |
+| Delta MFCC | Regression slope over ±2 frames | `delta`, `sa_delta` |
+| Spectral centroid, bandwidth, roll-off, flatness | "Brightness", spread, 85 % energy point, noise-like vs tonal | `spectral_*` |
+| ZCR, short-time energy, RMS | Time-domain noisiness and loudness | `zero_crossing_rate`, `short_time_energy` |
+| The 53-feature vector | Mean + std summarisation, the three groups | `extract`, `sa_features.m` |
+| Feature ablation | Which group matters (MFCC carries every branch) | `src/ablation.py`, section 5.3 |
+| Cross-verification | Same file, two languages, relative error per feature (≤ 6×10⁻⁸) | `matlab/sa_verify.m`, `scripts/export_for_matlab.py --verify` |
+| MATLAB classifier | k-NN on the model exported from Python | `matlab/sa_classify.m` |
+
+**Resources**
+- "Mel Frequency Cepstral Coefficient (MFCC) tutorial", practicalcryptography.com (best single explanation).
+- 3Blue1Brown, "But what is the Fourier Transform?" (YouTube) for intuition.
+- Oppenheim & Schafer ch. 8–10 (DFT, FFT, spectral analysis with the DFT).
+- MATLAB docs: `fft`, `spectrogram`, `dct`, `hamming`.
+- Our `DSP_EXPLAINED.md` Part 4 (every feature with its formula) and `matlab/README_matlab.md`.
+
+**PPT slides you make:** Framing, windowing, FFT & spectrogram · MFCC step by
+step (one slide with the 7-step diagram, `melbank_music.png`) · Spectral &
+temporal features, 53-D vector (`pca_music.png`) · Feature ablation
+(`ablation.png`) · MATLAB implementation + verification table (with Arjit,
+`matlab_demo_heart.png`).
+
+**Viva questions you answer**
+- *Why Hamming and not rectangular?* Rectangular has high side lobes → energy
+  leaks into neighbouring bins; Hamming's first side lobe is about −43 dB.
+- *Why log before DCT?* Turns the multiplicative source × filter model into an
+  addition so the DCT can separate them; also matches loudness perception.
+- *Why only 13 MFCCs?* The low coefficients describe the spectral envelope
+  (timbre); higher ones carry fine pitch detail that is not needed.
+- *What does a wheeze look like in the spectrogram?* A narrow bright line
+  (a tone, 100–1000 Hz) lasting more than 100 ms; a crackle is a short vertical streak.
+- *How do you know your MFCC is correct?* Two independent implementations
+  (Python and MATLAB) agree to within 6 × 10⁻⁸ relative error on all 53
+  features; the check found two real bugs (rounding and STFT padding).
 
 ---
 
 ## 8. PPT outline and abstract draft
 
-### 8.1 Slide-by-slide outline (~16 slides, 12–15 min)
+### 8.1 Slide-by-slide outline (~17 slides, 12–15 min)
 
 | # | Slide | Owner | Figure to use (in `results/figures/`) |
 |---|---|---|---|
-| 1 | Title, team, guide | You | — |
-| 2 | Problem: auscultation gap in India + music tagging | You | — |
-| 3 | Our solution & use case (the flow diagram in section 2) | You | `ui_heart.png` |
-| 4 | System architecture (M1–M5 + router + rhythm) | You | — (draw from section 4.1) |
-| 5 | Datasets | Arin | — (table from section 6) |
-| 6 | Pre-processing: resample, denoise, Butterworth | You | `ui_dsp.png` |
-| 7 | Framing, windowing, FFT, spectrogram | Arjit | `overview_heart_abnormal.png` |
-| 8 | MFCC step by step + mel filter bank | Arjit | `melbank_music.png` |
-| 9 | Spectral & temporal features; 53-D vector | Arjit | `pca_music.png` |
-| 10 | Classifiers & evaluation method (group split, imbalance) | Arin | — |
-| 11 | Results: three branches | Arin | `classifier_comparison.png` |
-| 12 | Confusion matrices | Arin | `confusion_heart.png`, `confusion_respiratory.png`, `confusion_music.png` |
-| 13 | Ablation & over/under-fitting | Arin + Arjit | `ablation.png`, `learning_curves.png` |
-| 14 | Rate estimation + auto-detect + PDF report | You | `ui_rhythm.png` |
-| 15 | MATLAB vs Python verification | Arjit | `matlab_demo.png` |
-| 16 | Conclusion, limitations, future scope | Arin | — |
-| — | **Live demo** (4 min, script in `DEMO_SCRIPT.md`) | You | — |
+| 1 | Title, team, guide | Arnav | — |
+| 2 | Problem: auscultation gap in India + music tagging | Arnav | — |
+| 3 | Our solution & use case (the flow diagram in section 2) | Arnav | `ui_heart.png` |
+| 4 | System architecture (M1–M5 + router + rhythm) | Arnav | — (draw from section 4.1) |
+| 5 | Datasets | Arnav | — (table from section 6) |
+| 6 | Pre-processing: resample, denoise, Butterworth | Arjit | `ui_dsp.png` |
+| 7 | Filter design & frequency response | Arjit | `ui_dsp.png` (bottom-left panel) |
+| 8 | Framing, windowing, FFT, spectrogram | Arin | `overview_heart_abnormal.png`, `ui_respiratory.png` |
+| 9 | MFCC step by step + mel filter bank | Arin | `melbank_music.png` |
+| 10 | Spectral & temporal features; 53-D vector; ablation | Arin | `pca_music.png`, `ablation.png` |
+| 11 | Heart rate / breathing rate / tempo (envelope autocorrelation) | Arjit | `ui_rhythm.png`, `ui_breathing.png` |
+| 12 | MATLAB implementation & MATLAB-vs-Python verification | Arin + Arjit | `matlab_demo_heart.png` |
+| 13 | Classifiers & evaluation method (group split, imbalance) | Arnav | — |
+| 14 | Results + confusion matrices | Arnav | `classifier_comparison.png`, `confusion_*.png` |
+| 15 | Over/under-fitting, comparison with literature | Arnav | `learning_curves.png` |
+| 16 | Auto-detect, unknown sounds, PDF report, the app | Arnav | `ui_unknown.png`, `results/reports/` |
+| 17 | Conclusion, limitations, future scope | Arnav | — |
+| — | **Live demo** (6 min, `DEMO_SCRIPT.md`); Arjit explains the DSP pipeline tab, Arin the Signal analysis tab | Arnav | — |
 
-**Future scope (slide 16):** CNN on log-mel spectrograms; murmur timing via S1/S2
+**Future scope (slide 17):** CNN on log-mel spectrograms; murmur timing via S1/S2
 segmentation (HMM); deploy on a phone with a ₹500 stethoscope adaptor; more
 lung classes (pneumonia, COPD — the ICBHI diagnosis file); clinical validation
 with a hospital.
@@ -454,7 +492,7 @@ datasets recorded in Europe/US/Brazil, not Indian clinics; lung sounds are hard 
 published classical methods on ICBHI also stay in the 50–60 % score range;
 music uses only 5 Western genres.
 
-### 8.2 Abstract (draft, about 250 words; Arin to polish)
+### 8.2 Abstract (draft, about 250 words; Arnav to polish)
 
 Auscultation, listening to heart and lung sounds with a stethoscope, is the
 first screening step for many cardiac and respiratory diseases, but it needs a

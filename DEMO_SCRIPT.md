@@ -12,6 +12,12 @@ Leave **Signal type = Auto-detect** (the default). Keep `TEAM_GUIDE.md`
 section 5 open in a second window for the numbers. Turn the laptop volume up
 (for ▶ Play) and keep the room reasonably quiet (for ● Record).
 
+**Who speaks:** Arnav drives the laptop and does sections 1, 4, 5 and the
+results questions. In section 2, **Arjit** explains the *DSP pipeline* and
+*Rhythm* tabs (filters, noise reduction, heart rate) and **Arin** explains the
+*Signal analysis* tab (FFT, spectrogram, MFCC). Arin and Arjit do section 6
+(MATLAB).
+
 Every demo clip is from the **held-out test split**: the model never trained on
 these recordings. The panel shows **"Ground truth … ✓ correct"** under the
 prediction, so the examiner can see it is not staged.
