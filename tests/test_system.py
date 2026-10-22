@@ -247,7 +247,9 @@ if "--no-gui" not in sys.argv:
     app.update()
     check("GUI starts with all models", set(app.models) == set(config.DOMAINS)
           and app.router is not None)
-    for f in [next(DEMO.glob(f"{d}_*_01.wav")) for d in config.DOMAINS] + \
+    # Skip branches whose demo clips are absent (a fresh clone has no GTZAN clips).
+    firsts = [next(DEMO.glob(f"{d}_*_01.wav"), None) for d in config.DOMAINS]
+    for f in [f for f in firsts if f is not None] + \
              list(DEMO.glob("respiratory_recording_*.wav"))[:1]:
         app.domain_var.set(app_gui.AUTO)
         app._on_domain()
