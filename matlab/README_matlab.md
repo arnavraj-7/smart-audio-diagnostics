@@ -60,7 +60,7 @@ python scripts/export_for_matlab.py --verify data/physionet2016/training-a/a0001
 ```matlab
 sa_verify('data/physionet2016/training-a/a0001.wav','heart','results/tables/verify_python_heart.csv')
 sa_verify('data/physionet2016/training-a/a0001.wav','heart','results/tables/verify_python_heart_dn.csv', true)
-sa_demo('data/demo_wavs/heart_abnormal_03.wav','heart')
+sa_demo('data/demo_wavs/heart_abnormal_02.wav','heart')
 ```
 
 Two discrepancies were found and fixed on the way: MATLAB `round(220.5)` = 221
