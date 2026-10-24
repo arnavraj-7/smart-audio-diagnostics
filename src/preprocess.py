@@ -148,6 +148,19 @@ def frame_signal(x, frame_len, hop_len, window="hamming"):
     return frames
 
 
+def trim_digital_silence(x, tol=1e-6):
+    """Removes runs of exact zeros at the start and end of a file.
+
+    Zero padding is not silence a microphone would record: where real audio
+    stops dead and padding begins, the step turns into a sharp click after
+    band-pass filtering, and on a lung sound that click looks exactly like a
+    crackle. Training data is never padded, so inputs should not be either."""
+    nz = np.flatnonzero(np.abs(x) > tol)
+    if len(nz) == 0:
+        return x
+    return x[nz[0]:nz[-1] + 1]
+
+
 def fix_length(x, sr, seconds):
     n = int(round(sr * seconds))
     if len(x) >= n:

@@ -17,7 +17,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
 from src.features import extract
-from src.preprocess import preprocess, read_audio, resample_to
+from src.preprocess import preprocess, read_audio, resample_to, trim_digital_silence
 from src import router
 from src.train import for_inference
 
@@ -27,6 +27,7 @@ EXTS = {".wav", ".au", ".mp3", ".flac", ".m4a", ".ogg", ".aac"}
 def scores(path, domain, model):
     cfg = config.DOMAINS[domain]
     x, sr = read_audio(path)
+    x = trim_digital_silence(np.asarray(x, dtype=np.float64))
     x = resample_to(np.asarray(x, dtype=np.float64), sr, cfg["sr"])
     n = int(round(cfg["sr"] * cfg["clip_s"]))
     k = max(1, len(x) // n)
