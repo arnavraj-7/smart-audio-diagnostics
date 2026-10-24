@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
 from src import router
 from src.datasets import load_heart_real, load_respiratory_real
-from src.preprocess import preprocess, read_audio
+from src.preprocess import preprocess, read_audio, trim_digital_silence
 from src.report import build_report
 from src.rhythm import estimate_rate
 from src.train import for_inference, screening_scores, split
@@ -173,9 +173,9 @@ from app_gui import segment_probs, true_label_from_name  # noqa: E402
 from src.preprocess import resample_to  # noqa: E402
 
 demos = sorted(DEMO.glob("*.wav"))
-# 22 heart/lung clips ship with the repo; the 20 GTZAN music clips are
+# 16 verified heart/lung clips ship with the repo; the GTZAN music clips are
 # regenerated locally (copyright), so they may be absent in a fresh clone.
-check("demo clips present", len(demos) >= 20, f"{len(demos)} files")
+check("demo clips present", len(demos) >= 12, f"{len(demos)} files")
 per = {}
 for f in demos:
     d = f.stem.split("_")[0]
@@ -213,7 +213,10 @@ if router.MODEL_PATH.exists():
     # alarms, ring tones, synthetic speech). They must be flagged as unknown.
     media = sorted(Path(r"C:\Windows\Media").glob("*.wav"))
     if media:
-        flagged = sum(router.analyse(*read_audio(f), rb)["unknown"] for f in media)
+        def app_input(f):            # exactly what the app analyses
+            x, sr = read_audio(f)
+            return trim_digital_silence(np.asarray(x, dtype=np.float64)), sr
+        flagged = sum(router.analyse(*app_input(f), rb)["unknown"] for f in media)
         check("unknown-sound rejection on Windows system sounds >= 80 %",
               flagged / len(media) >= 0.8, f"{flagged}/{len(media)}")
 
@@ -250,7 +253,7 @@ if "--no-gui" not in sys.argv:
     # Skip branches whose demo clips are absent (a fresh clone has no GTZAN clips).
     firsts = [next(DEMO.glob(f"{d}_*_01.wav"), None) for d in config.DOMAINS]
     for f in [f for f in firsts if f is not None] + \
-             list(DEMO.glob("respiratory_recording_*.wav"))[:1]:
+             list(DEMO.glob("respiratory_*_rec*.wav"))[:1]:
         app.domain_var.set(app_gui.AUTO)
         app._on_domain()
         app._load(f)
@@ -264,6 +267,16 @@ if "--no-gui" not in sys.argv:
         for i in range(4):
             app.nb.select(i)
             app.update()
+    alarm = Path(r"C:\Windows\Media\Alarm04.wav")
+    if alarm.exists():
+        app.domain_var.set(app_gui.AUTO)
+        app._on_domain()
+        app._load(alarm)
+        app.classify()
+        app.update()
+        check("GUI shows UNKNOWN SOUND for a non-medical, non-music sound",
+              app.result_lbl.cget("text") == "UNKNOWN SOUND", app.result_lbl.cget("text"))
+
     # A file that cannot be used must not wipe the one on screen.
     app_gui.messagebox.showerror = lambda *a, **k: None
     before = app.path

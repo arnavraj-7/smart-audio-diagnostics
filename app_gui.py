@@ -36,7 +36,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import config
 from src import router
 from src.features import extract, mel_filterbank, mfcc, stft_power
-from src.preprocess import denoise, preprocess, read_audio, resample_to
+from src.preprocess import (denoise, preprocess, read_audio, resample_to,
+                            trim_digital_silence)
 from src.report import build_report
 from src.rhythm import estimate_rate
 from src.train import for_inference
@@ -102,9 +103,10 @@ def segment_probs(model, full, cfg):
 
 
 def true_label_from_name(path, domain):
-    """Demo clips are named <domain>_<class>_NN.wav, so the ground truth is
-    known and the UI can show whether the prediction matched it."""
-    m = re.match(rf"{domain}_([a-z]+)_\d+", Path(path).stem)
+    """Demo clips are named <domain>_<class>_NN.wav (or _recNN for a whole
+    lung recording, labelled by the majority of its annotated cycles), so the
+    ground truth is known and the UI can show whether the prediction matched."""
+    m = re.match(rf"{domain}_([a-z]+)_(?:rec)?\d+", Path(path).stem)
     if m and m.group(1) in config.DOMAINS[domain]["classes"]:
         return m.group(1)
     return None
@@ -515,6 +517,7 @@ class App(tk.Tk):
         # already on screen.
         try:
             audio, sr_in = read_audio(path)
+            audio = trim_digital_silence(np.asarray(audio, dtype=np.float64))
         except Exception as e:
             messagebox.showerror("Could not read file", str(e))
             return
@@ -851,8 +854,15 @@ class App(tk.Tk):
         self.result = {"classes": classes, "rows": rows, "probs": probs, "top": top}
 
         colour = OK if (self.domain == "music" or top == "normal") else WARN
+        if self.domain_var.get() == AUTO and getattr(self, "route_unknown", False):
+            # Not music, heart or lung: a branch label would be meaningless,
+            # so the card says so; the bars below stay as the nearest match.
+            self.result["top"] = "unknown sound"
+            colour, shown = MUTED, "UNKNOWN SOUND"
+        else:
+            shown = str(top).upper()
         ttk.Style(self).configure("Result.TLabel", foreground=colour)
-        self.result_lbl.config(text=str(top).upper())
+        self.result_lbl.config(text=shown)
         truth = true_label_from_name(self.path, self.domain) if self.path else None
         if truth:
             ok = truth == top
@@ -890,8 +900,12 @@ class App(tk.Tk):
                     "  ⚠ borderline result - repeat the recording or refer")
         else:
             warn = ""
-        self._status(f"Predicted '{top}' with {conf * 100:.1f}% confidence "
-                     f"using {meta['classifier']}{seg}{note}{warn}")
+        if self.result["top"] == "unknown sound":
+            self._status("Unknown sound - not music, a heart or a lung recording, so no "
+                         "branch result is given. Try a stethoscope recording or a song.")
+        else:
+            self._status(f"Predicted '{top}' with {conf * 100:.1f}% confidence "
+                         f"using {meta['classifier']}{seg}{note}{warn}")
         self._plot_rhythm()
         return top, conf
 
@@ -945,6 +959,7 @@ class App(tk.Tk):
             self._status(f"Batch {i}/{len(files)}: {f.name}")
             try:
                 x, sr = read_audio(f)
+                x = trim_digital_silence(np.asarray(x, dtype=np.float64))
                 unknown = False
                 if self.domain_var.get() == AUTO and self.router:
                     rr = router.analyse(x, sr, self.router)
