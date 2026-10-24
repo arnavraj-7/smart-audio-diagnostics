@@ -52,6 +52,11 @@ by any shipped model.
 5. **Failed file load** wiped the file on screen. Now it is kept.
 6. **ICBHI memory:** loading 6 000 cycles at 44.1 kHz would take several GB; audio is
    now resampled to the branch rate while loading, and each recording is decoded once.
+7. **Zero-padding read as a crackle (24 Oct):** short lung-cycle demo clips were
+   padded to 3 s with digital silence; the hard stop became a click after
+   band-pass filtering, which the model read as a crackle. Demo cycles are no
+   longer padded, and the app and CLI strip digital-silence padding from any
+   input (`trim_digital_silence`). Normal lung demo clips went from 2/4 to 4/4.
 
 ### New features
 
