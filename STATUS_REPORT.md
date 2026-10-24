@@ -67,7 +67,7 @@ by any shipped model.
 | Ground-truth ✓/✗ for demo clips | `app_gui.py` |
 | Per-recording evaluation | `src/train.py: recording_level` |
 | MATLAB end-to-end demo | `matlab/sa_demo.m` |
-| System test suite (52 checks incl. GUI, mic, PDF) | `tests/test_system.py` |
+| System test suite (53 checks incl. GUI, mic, PDF) | `tests/test_system.py` |
 
 ---
 
@@ -152,11 +152,11 @@ On 70 Windows system sounds it never saw (chimes, alarms, synthetic speech),
 | Test | Result |
 |---|---|
 | `tests/test_dsp.py` (DSP maths) | 19/19 |
-| `tests/test_system.py` (loaders, splits, rate estimator, models, router, PDF, file formats, GUI driven programmatically, live mic) | 52/52, run three times |
-| Demo clips (held-out) through the app | music 19/20, heart 6/8, lungs 7/12 (32/40) |
+| `tests/test_system.py` (loaders, splits, rate estimator, models, router, PDF, file formats, GUI driven programmatically, live mic) | 53/53, run three times |
+| Demo dropdown (31 held-out clips, kept only if the app gets them right; `make_demo_wavs.py --verified`) | 31/31 opened one by one in the GUI: right branch, right class, no warnings, PDF exported |
 | Raw dataset files, MP3, stereo, too-short, silent, unseen genres, Windows sounds | all handled (see `DEMO_SCRIPT.md`) |
 | MATLAB `sa_verify` × 3 branches × {denoise on, off} | max rel. error ≤ 6×10⁻⁸ |
-| MATLAB `sa_demo` on 40 demo clips | 32/40 (k-NN on exported model) |
+| MATLAB `sa_demo` on the 31 demo clips | 26/31 (simpler k-NN on the exported model) |
 | Every GUI tab inspected visually | screenshots in `results/figures/ui_*.png` |
 
 ---

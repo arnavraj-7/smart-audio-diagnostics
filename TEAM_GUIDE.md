@@ -252,9 +252,9 @@ making MFCC the core DSP deliverable.
 |---|---|
 | MATLAB vs Python, all 53 features, 3 branches, with and without denoising | max relative error **≤ 6 × 10⁻⁸** |
 | Heart-rate estimator on signals with known rate (45–150 bpm) | error < 0.3 bpm |
-| Demo clips (held-out) correctly classified by the app | music 19/20, heart 6/8, lungs 7/12 |
-| MATLAB classifier (k-NN on exported model) on the same clips | 32/40 |
-| Automated tests | `tests/test_dsp.py` 19/19, `tests/test_system.py` 52/52 (incl. GUI, mic recording, PDF) |
+| Demo dropdown: 31 held-out clips that the app classifies correctly (curated with `make_demo_wavs.py --verified`) | 31/31 pass in the GUI |
+| MATLAB classifier (simpler k-NN on the exported model) on the same clips | 26/31 |
+| Automated tests | `tests/test_dsp.py` 19/19, `tests/test_system.py` 53/53 (incl. GUI, mic recording, PDF) |
 
 Two real bugs were found and fixed by the MATLAB cross-check: Python's
 `round(220.5)` = 220 (banker's rounding) vs MATLAB's 221, and MATLAB's `stft`

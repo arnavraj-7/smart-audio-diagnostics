@@ -22,7 +22,7 @@ labels and clinical-screening labels are never mixed into one classifier.
 pip install -r requirements.txt
 python app_gui.py               # the demo app (models are already trained)
 python tests/test_dsp.py        # 19 checks on the DSP front end
-python tests/test_system.py     # 52 checks: loaders, models, router, PDF, GUI, mic
+python tests/test_system.py     # 53 checks: loaders, models, router, PDF, GUI, mic
 ```
 
 ### What is in this repository, and what is not
