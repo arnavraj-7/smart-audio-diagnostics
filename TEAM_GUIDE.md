@@ -7,7 +7,7 @@ useful, how it works, what each of us must study, and what goes into the PPT
 and the abstract.** Every number in it was produced by running the code in this
 folder (see section 9 to reproduce).
 
-> Work split (section 7): **Arnav (CSE)**: Python, machine learning, the app
+> Work split (section 7): **Arnav (ECE)**: Python, machine learning, the app
 > and the demo · **Arjit (ECE)**: DSP part 1, sampling, filters, noise
 > reduction, heart/breathing rate + MATLAB pre-processing · **Arin (ECE)**:
 > DSP part 2, FFT, spectrogram, MFCC & features + MATLAB features and
@@ -96,7 +96,6 @@ PDF report** · **Batch folder…**
 | **Signal analysis** | Waveform, FFT spectrum, spectrogram, MFCC map | Time vs frequency domain, STFT, cepstrum |
 | **DSP pipeline** | Raw vs filtered waveform; raw vs filtered spectrum (Welch PSD); Butterworth filter response; mel filter bank | Filtering, noise reduction, filter design, mel scale |
 | **Rhythm & timeline** | Envelope with detected beats/breaths; autocorrelation with the chosen period; per-segment class probabilities | Envelope detection, autocorrelation, periodicity |
-| **Model performance** | Confusion matrix and classifier comparison of the loaded branch | Evaluation metrics |
 
 Right-hand panel: auto-detected signal type, prediction with confidence bars,
 **ground truth ✓/✗** for demo clips, heart rate / breathing rate / tempo, and
@@ -288,9 +287,9 @@ a documented negative result, and an honest one to present.
 
 ## 7. Who studies what
 
-The split follows our backgrounds: **Arnav (CSE)** owns the Python and
-machine-learning side; **Arjit and Arin (core ECE)** own the DSP theory and the
-MATLAB implementation, divided so they do not overlap. Arjit takes the signal
+All three of us are ECE. **Arnav** owns the Python and machine-learning side;
+**Arjit and Arin** own the DSP theory and the MATLAB implementation, divided so
+they do not overlap. Arjit takes the signal
 *before* features (sampling, filters, noise, rate), and Arin takes the
 features themselves (FFT, spectrogram, MFCC) and the MATLAB-vs-Python proof.
 
@@ -298,14 +297,14 @@ Each person owns their part end-to-end: **understand it, explain it in the
 viva, and make its PPT slides.** Everyone must be able to give the 1-minute
 overview in section 1 and the use case in section 2.
 
-| | Arnav (CSE) | Arjit (ECE) | Arin (ECE) |
+| | Arnav (ECE) | Arjit (ECE) | Arin (ECE) |
 |---|---|---|---|
 | Area | Python, ML, app, demo | DSP 1: sampling, filtering, pre-processing, rate estimation | DSP 2: spectral analysis, MFCC & features |
 | MATLAB | — | `sa_preprocess.m`, `sa_round.m`, `sa_demo.m` | `sa_features.m`, `sa_verify.m`, `sa_classify.m` |
 | Python files | `src/train.py`, `src/datasets.py`, `src/router.py`, `train_model.py`, `run_experiment.py`, `analyze_fit.py`, `app_gui.py`, `src/report.py`, `tests/` | `src/preprocess.py`, `src/rhythm.py` | `src/features.py`, `src/ablation.py` |
 | Writes | Abstract, results slides, demo | Pre-processing + rate slides | Feature + MATLAB slides |
 
-### 7.1 Arnav (CSE): Python, machine learning, the app and the demo
+### 7.1 Arnav (ECE): Python, machine learning, the app and the demo
 
 **Owns:** M1 datasets and loaders, M4 classifiers, M5 evaluation, the router,
 the training/experiment scripts, `app_gui.py`, the tests, the live demo, the
